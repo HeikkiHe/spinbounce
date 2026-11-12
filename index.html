@@ -623,7 +623,7 @@ $('mH').addEventListener('click',()=>setHap(!hapOn));
 syncTog();
 
 // ---------- Kenttä ----------
-let PZ=null, fieldTop=null;
+let PZ=null, fieldTop=null, fadeA=null;
 let cur=0, L=null, lv=null, vh=null, running=false, won=false, falls=0, bounces=0;
 const ball=newState(0,0,0,0);
 let rot=[1,0,0,0,1,0,0,0,1], baseZ=0.5, camZ=0.5, camX=0, camY=0, acc=0, hintTimer=0;
@@ -643,7 +643,7 @@ function startLevel(n,att){
     PZ.gates.push({cells,hA:g[4],hB:g[5],color:g[6],cur:g[4],tog:false}); }
   PZ.cr=(lv.cr||[]).map(c=>({x:c[0],y:c[1],z:c[2],got:false}));
   $('altL').textContent=PZ.cr.length?T('hudCrystals'):T('hudHeight');
-  vh=new Float32Array(L.h.length);
+  vh=new Float32Array(L.h.length); fadeA=new Float32Array(L.h.length).fill(1);
   for(let j=0;j<L.H;j++) for(let i=0;i<L.W;i++){ const k=j*L.W+i;
     vh[k]= L.t[k]===4 ? ((i===L.W-1||j===L.H-1)?1.0:Math.min(9.5,maxH+1.6)) : L.h[k]; }
   // labyrinttirakenteessa seinät piirretään matalina reunuksina ja niiden päälle läpikuultava energiakenttä, jotta käytävät näkyvät
@@ -888,10 +888,10 @@ function drawTile(i,j){
   const k=j*L.W+i, h=vh[k], col=topCol(k), base=-0.6, ty=L.t[k], raised=L.h[k]>0.5&&ty!==4;
   const tc=proj(i+0.5,j+0.5,h);
   if(tc[0]<-TW||tc[0]>W+TW||tc[1]>H+TW||tc[1]+(h+0.6)*HZ()<-TW) return;
-  const bc=proj(ball.px,ball.py,ball.pz);
+  const bz=baseZ+1.0, bc=proj(ball.px,ball.py,bz);   // pompun keskikorkeus: ei välky pompun tahdissa
   const bi=Math.floor(ball.px), bj=Math.floor(ball.py);
-  const front = i>=bi && j>=bj && (i>bi||j>bj) && h>ball.pz-R && Math.abs(tc[0]-bc[0])<TW*0.6 && tc[1]-TW*0.3<bc[1];
-  ctx.globalAlpha = front ? 0.28 : 1;
+  const front = i>=bi && j>=bj && (i>bi||j>bj) && h>baseZ+0.2 && Math.abs(tc[0]-bc[0])<TW*0.75 && tc[1]-TW*0.3<bc[1]+TW*0.5;
+  fadeA[k]+=((front?0.28:1)-fadeA[k])*0.12; ctx.globalAlpha=fadeA[k];
   const rk=i+1<L.W?k+1:-1, fk=j+1<L.H?k+L.W:-1;
   // kulmien korkeudet: viistossa ruudussa kansi on kallellaan
   const gx=L.gx[k], gy=L.gy[k], sl=gx!==0||gy!==0, hB=h+gx/2-gy/2, hC=h+gx/2+gy/2, hD=h-gx/2+gy/2, hA=h-gx/2-gy/2;
