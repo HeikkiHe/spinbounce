@@ -46,6 +46,9 @@
   #levelsV > :first-child { margin-top:auto; } #levelsV > :last-child { margin-bottom:auto; margin-top:14px; }
   #titleV .spacer { flex:1; min-height:24vh; }
   .logo { display:flex; flex-direction:column; align-items:center; line-height:0.95; margin:6px 0 6px !important; font-size:min(15vw,74px) !important; letter-spacing:0.04em !important; }
+  /* Safari ei piirrä liukuvärjättyä tekstiä, jos sen sisällä oleva osa liikkuu: jokaisella sanalla on oma liukuväri */
+  .logo { background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important; color:inherit !important; }
+  .logo span { display:block; background:linear-gradient(90deg,#00e5ff,#c060ff,#ff4fd8); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; will-change:transform; }
   .logo span:last-child { animation:bob 0.82s cubic-bezier(.33,0,.67,1) infinite alternate; }
   .logo { margin-top:0 !important; }
   .emblem { width:min(26vw,108px); height:auto; margin-top:4vh; filter:drop-shadow(0 0 14px #ff8a2a80); }
