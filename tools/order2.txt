@@ -1,0 +1,100 @@
+1	stairs	Tähtiportaat 1/12	n=12	k=1	score=1.4	[Kallista puhelinta (tai osoi]
+2	stairs	Tähtiportaat 2/12	n=12	k=1	score=1.2	[Pallo jatkaa vauhdissa. Kall]
+3	stairs	Tähtiportaat 3/12	n=12	k=1	score=1.5	[Matala porras: pallo nousee ]
+4	stairs	Tähtiportaat 4/12	n=12	k=2	score=4.8	[Valkoinen rengas näyttää, mi]
+5	stairs	Tähtiportaat 5/12	n=12	k=2	score=4.8	[Korkeampi porras: pallon pit]
+6	stairs	Tähtiportaat 6/12	n=12	k=3	score=11.4	[Rako tasojen välissä: ota va]
+7	stairs	Tähtiportaat 7/12	n=15	k=2	score=2.0
+8	stairs	Tähtiportaat 8/12	n=15	k=2	score=2.3
+9	stairs	Tähtiportaat 9/12	n=15	k=2	score=2.5
+10	stairs	Tähtiportaat 10/12	n=17	k=3	score=3.5
+11	stairs	Tähtiportaat 11/12	n=16	k=4	score=3.6
+12	stairs	Tähtiportaat 12/12	n=17	k=4	score=4.0
+13	islands	Asteroidivyö 1/11	n=17	k=5	score=4.3	[Asteroidivyö: hypi saarelta ]
+14	islands	Asteroidivyö 2/11	n=16	k=6	score=6.5	[Uutta: hiekka pölähtää ja ja]
+15	islands	Asteroidivyö 3/11	n=17	k=5	score=6.6
+16	islands	Asteroidivyö 4/11	n=17	k=5	score=7.7	[Uutta: viisto pinta heittää ]
+17	islands	Asteroidivyö 5/11	n=19	k=7	score=7.7
+18	islands	Asteroidivyö 6/11	n=15	k=4	score=7.8
+19	islands	Asteroidivyö 7/11	n=16	k=5	score=8.7
+20	islands	Asteroidivyö 8/11	n=15	k=4	score=9.0
+21	islands	Asteroidivyö 9/11	n=15	k=4	score=9.4
+22	islands	Asteroidivyö 10/11	n=18	k=7	score=10.2
+23	islands	Asteroidivyö 11/11	n=19	k=7	score=10.5
+24	ziggurat	Zikkurat 1/11	n=16	k=5	score=5.4	[Zikkurat: nouse terassi kerr]
+25	ziggurat	Zikkurat 2/11	n=17	k=5	score=6.4
+26	ziggurat	Zikkurat 3/11	n=17	k=3	score=6.5
+27	ziggurat	Zikkurat 4/11	n=18	k=5	score=7.2
+28	ziggurat	Zikkurat 5/11	n=20	k=6	score=7.5
+29	ziggurat	Zikkurat 6/11	n=18	k=4	score=7.9
+30	ziggurat	Zikkurat 7/11	n=19	k=5	score=8.7
+31	ziggurat	Zikkurat 8/11	n=19	k=4	score=8.7
+32	ziggurat	Zikkurat 9/11	n=20	k=6	score=9.5
+33	ziggurat	Zikkurat 10/11	n=20	k=7	score=10.0
+34	ziggurat	Zikkurat 11/11	n=17	k=4	score=10.8
+35	maze	Labyrintti 1/11	n=15	k=1	score=7.0	[Labyrintti: etsi reitti maal]
+36	maze	Labyrintti 2/11	n=15	k=1	score=8.5
+37	maze	Labyrintti 3/11	n=19	k=1	score=8.9
+38	maze	Labyrintti 4/11	n=19	k=1	score=9.5
+39	maze	Labyrintti 5/11	n=19	k=1	score=9.8	[Uutta: teleportti siirtää pa]
+40	maze	Labyrintti 6/11	n=19	k=1	score=10.4
+41	maze	Labyrintti 7/11	n=19	k=1	score=10.5
+42	maze	Labyrintti 8/11	n=19	k=1	score=10.7
+43	maze	Labyrintti 9/11	n=23	k=1	score=11.9
+44	maze	Labyrintti 10/11	n=19	k=1	score=11.9
+45	maze	Labyrintti 11/11	n=19	k=1	score=12.5
+46	ice	Jääkomeetta 1/11	n=19	k=7	score=9.2	[Jääkomeetta: lattia on lähes]
+47	ice	Jääkomeetta 2/11	n=19	k=5	score=10.8
+48	ice	Jääkomeetta 3/11	n=18	k=6	score=11.8
+49	maze	Jääkomeetta 4/11	n=20	k=1	score=12.2	[Pulmahuone: selvitä, missä j]
+50	ice	Jääkomeetta 5/11	n=20	k=9	score=12.5
+51	ice	Jääkomeetta 6/11	n=19	k=6	score=12.8
+52	maze	Jääkomeetta 7/11	n=17	k=1	score=13.4
+53	ice	Jääkomeetta 8/11	n=22	k=8	score=13.0
+54	ice	Jääkomeetta 9/11	n=21	k=8	score=13.4
+55	maze	Jääkomeetta 10/11	n=23	k=1	score=13.8
+56	ice	Jääkomeetta 11/11	n=20	k=9	score=16.0
+57	tramp	Hyppyasema 1/11	n=21	k=5	score=10.8	[Hyppyasema: sykkivä violetti]
+58	tramp	Hyppyasema 2/11	n=19	k=7	score=13.1
+59	tramp	Hyppyasema 3/11	n=21	k=7	score=13.9
+60	maze	Hyppyasema 4/11	n=17	k=1	score=16.0
+61	tramp	Hyppyasema 5/11	n=24	k=10	score=15.1
+62	tramp	Hyppyasema 6/11	n=22	k=9	score=17.1
+63	maze	Hyppyasema 7/11	n=17	k=1	score=17.1
+64	tramp	Hyppyasema 8/11	n=22	k=8	score=17.8
+65	tramp	Hyppyasema 9/11	n=20	k=9	score=17.9
+66	maze	Hyppyasema 10/11	n=17	k=1	score=17.6
+67	tramp	Hyppyasema 11/11	n=23	k=10	score=18.1
+68	pillars	Pilarimetsä 1/11	n=23	k=14	score=13.5	[Pilarimetsä: kapeita pylväit]
+69	pillars	Pilarimetsä 2/11	n=23	k=13	score=16.1
+70	pillars	Pilarimetsä 3/11	n=24	k=13	score=17.7
+71	maze	Pilarimetsä 4/11	n=20	k=1	score=21.5
+72	pillars	Pilarimetsä 5/11	n=21	k=10	score=18.0
+73	pillars	Pilarimetsä 6/11	n=22	k=12	score=18.8
+74	maze	Pilarimetsä 7/11	n=20	k=1	score=22.8
+75	pillars	Pilarimetsä 8/11	n=23	k=14	score=20.0
+76	pillars	Pilarimetsä 9/11	n=24	k=14	score=20.1
+77	maze	Pilarimetsä 10/11	n=20	k=1	score=23.3
+78	pillars	Pilarimetsä 11/11	n=25	k=16	score=21.9
+79	bridges	Valosillat 1/11	n=24	k=14	score=16.1	[Valosillat: kapeita siltoja ]
+80	bridges	Valosillat 2/11	n=23	k=13	score=19.4
+81	bridges	Valosillat 3/11	n=25	k=13	score=21.2
+82	maze	Valosillat 4/11	n=20	k=1	score=23.9
+83	bridges	Valosillat 5/11	n=24	k=13	score=22.1
+84	bridges	Valosillat 6/11	n=26	k=16	score=22.9
+85	maze	Valosillat 7/11	n=15	k=1	score=25.2
+86	bridges	Valosillat 8/11	n=23	k=13	score=24.1
+87	bridges	Valosillat 9/11	n=24	k=12	score=25.3
+88	maze	Valosillat 10/11	n=17	k=1	score=25.8
+89	bridges	Valosillat 11/11	n=26	k=14	score=27.3
+90	crater	Kraatteri 1/11	n=25	k=14	score=19.9	[Kraatteri: ensin ylös, sitte]
+91	crater	Kraatteri 2/11	n=28	k=17	score=26.3
+92	crater	Kraatteri 3/11	n=26	k=17	score=26.3
+93	maze	Kraatteri 4/11	n=15	k=1	score=28.3
+94	crater	Kraatteri 5/11	n=24	k=15	score=28.0
+95	crater	Kraatteri 6/11	n=27	k=14	score=31.1
+96	maze	Kraatteri 7/11	n=20	k=1	score=31.0
+97	crater	Kraatteri 8/11	n=27	k=14	score=31.2
+98	crater	Kraatteri 9/11	n=26	k=16	score=31.2
+99	maze	Kraatteri 10/11	n=17	k=1	score=37.4
+100	crater	Kraatteri 11/11	n=29	k=18	score=39.1
