@@ -860,6 +860,8 @@ function padDeco(i,j,h,pi){ const m=proj(i+0.5,j+0.5,h), t=performance.now()/100
   for(let q=0;q<=pi%3;q++){ const a=t*2+q*2.094; ctx.fillStyle=ca(c,1); ctx.beginPath(); ctx.arc(m[0]+Math.cos(a)*TW*0.3,m[1]+Math.sin(a)*TW*0.15,2.2,0,6.283); ctx.fill(); } }
 function drawCrystal(c){ const t=performance.now()/1000, bob=Math.sin(t*2.5+c.x*3)*0.08, m=proj(c.x,c.y,c.z+bob), g=proj(c.x,c.y,c.z-0.95), w=TW*0.16, hh=TW*0.3, sp=Math.cos(t*2+c.y);
   ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(g[0],g[1],TW*0.14,TW*0.07,0,0,6.283); ctx.fill();
+  ctx.strokeStyle=`rgba(140,255,250,${0.35+0.25*Math.sin(t*3+c.x)})`; ctx.lineWidth=1.6; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.ellipse(g[0],g[1],TW*0.42,TW*0.21,0,0,6.283); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(140,255,250,0.25)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(g[0],g[1]); ctx.lineTo(m[0],m[1]+hh); ctx.stroke();
   const gl=ctx.createRadialGradient(m[0],m[1],1,m[0],m[1],TW*0.6); gl.addColorStop(0,'rgba(140,255,250,0.45)'); gl.addColorStop(1,'rgba(140,255,250,0)'); ctx.fillStyle=gl; ctx.beginPath(); ctx.arc(m[0],m[1],TW*0.6,0,6.283); ctx.fill();
   ctx.fillStyle='#8ffcf4'; ctx.beginPath(); ctx.moveTo(m[0],m[1]-hh); ctx.lineTo(m[0]+w,m[1]); ctx.lineTo(m[0],m[1]+hh); ctx.lineTo(m[0]-w,m[1]); ctx.closePath(); ctx.fill();
   ctx.fillStyle='rgba(255,255,255,0.85)'; ctx.beginPath(); ctx.moveTo(m[0],m[1]-hh); ctx.lineTo(m[0]+w*sp,m[1]); ctx.lineTo(m[0],m[1]+hh); ctx.closePath(); ctx.fill();
@@ -1017,7 +1019,8 @@ function tpBurst(x,y,z){ for(let q=0;q<14;q++){ const a=Math.random()*6.283, sp=
 function stepPuzzle(dt){
   for(const g of PZ.gates){ const tgt=g.tog?g.hB:g.hA; if(g.cur!==tgt){ const d=tgt-g.cur, st=7*dt; g.cur=Math.abs(d)<=st?tgt:g.cur+Math.sign(d)*st; for(const k of g.cells){ L.h[k]=g.cur; if(fieldTop){ fieldTop[k]=g.cur>1.1?g.cur:0; vh[k]=Math.min(g.cur,1.1); } else vh[k]=g.cur; } } }
   for(const c of PZ.cr){ if(c.got) continue; const dx=c.x-ball.px, dy=c.y-ball.py, dz=c.z-ball.pz;
-    if(dx*dx+dy*dy+dz*dz<(R+0.5)*(R+0.5)){ c.got=true; PZ.got++; SND.crystal(PZ.got-1); HAP.bounce(2);
+    // pallo kiteen ruudulla ja pompun korkeudella
+    if(dx*dx+dy*dy<0.8*0.8&&Math.abs(dz)<1.15){ c.got=true; PZ.got++; SND.crystal(PZ.got-1); HAP.bounce(2);
       for(let q=0;q<12;q++){ const a=Math.random()*6.283; parts.push({x:c.x,y:c.y,z:c.z,z0:c.z-1,vx:Math.cos(a)*1.4,vy:Math.sin(a)*1.4,vz:1+Math.random(),life:0,max:0.7,ty:31,s:0.045}); }
       if(PZ.got===PZ.cr.length){ SND.unlock(); flash(T('allCr'),3.5); } } }
 }
