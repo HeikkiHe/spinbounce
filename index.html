@@ -623,7 +623,7 @@ $('mH').addEventListener('click',()=>setHap(!hapOn));
 syncTog();
 
 // ---------- Kenttä ----------
-let PZ=null, fieldTop=null, fadeA=null;
+let PZ=null, fieldTop=null;
 let cur=0, L=null, lv=null, vh=null, running=false, won=false, falls=0, bounces=0;
 const ball=newState(0,0,0,0);
 let rot=[1,0,0,0,1,0,0,0,1], baseZ=0.5, camZ=0.5, camX=0, camY=0, acc=0, hintTimer=0;
@@ -643,7 +643,7 @@ function startLevel(n,att){
     PZ.gates.push({cells,hA:g[4],hB:g[5],color:g[6],cur:g[4],tog:false}); }
   PZ.cr=(lv.cr||[]).map(c=>({x:c[0],y:c[1],z:c[2],got:false}));
   $('altL').textContent=PZ.cr.length?T('hudCrystals'):T('hudHeight');
-  vh=new Float32Array(L.h.length); fadeA=new Float32Array(L.h.length).fill(1);
+  vh=new Float32Array(L.h.length); peekR=0; peekT=0;
   for(let j=0;j<L.H;j++) for(let i=0;i<L.W;i++){ const k=j*L.W+i;
     vh[k]= L.t[k]===4 ? ((i===L.W-1||j===L.H-1)?1.0:Math.min(9.5,maxH+1.6)) : L.h[k]; }
   // labyrinttirakenteessa seinät piirretään matalina reunuksina ja niiden päälle läpikuultava energiakenttä, jotta käytävät näkyvät
@@ -888,15 +888,14 @@ function drawTile(i,j){
   const k=j*L.W+i, h=vh[k], col=topCol(k), base=-0.6, ty=L.t[k], raised=L.h[k]>0.5&&ty!==4;
   const tc=proj(i+0.5,j+0.5,h);
   if(tc[0]<-TW||tc[0]>W+TW||tc[1]>H+TW||tc[1]+(h+0.6)*HZ()<-TW) return;
-  const bz=baseZ+1.0, bc=proj(ball.px,ball.py,bz);   // pompun keskikorkeus: ei välky pompun tahdissa
-  const bi=Math.floor(ball.px), bj=Math.floor(ball.py);
-  const front = i>=bi && j>=bj && (i>bi||j>bj) && h>baseZ+0.2 && Math.abs(tc[0]-bc[0])<TW*0.75 && tc[1]-TW*0.3<bc[1]+TW*0.5;
-  fadeA[k]+=((front?0.28:1)-fadeA[k])*0.12; ctx.globalAlpha=fadeA[k];
   const rk=i+1<L.W?k+1:-1, fk=j+1<L.H?k+L.W:-1;
+  // kurkistusaukossa leikattu ruutu on tasainen; sen naapuritkin lasketaan leikatun korkeuden mukaan
+  const cut=cutPass&&cutM[k]===1, fl=q=>cutPass&&cutM[q]===1?0:1;
   // kulmien korkeudet: viistossa ruudussa kansi on kallellaan
-  const gx=L.gx[k], gy=L.gy[k], sl=gx!==0||gy!==0, hB=h+gx/2-gy/2, hC=h+gx/2+gy/2, hD=h-gx/2+gy/2, hA=h-gx/2-gy/2;
-  const rhB=rk>=0?vh[rk]-L.gx[rk]/2-L.gy[rk]/2:base, rhC=rk>=0?vh[rk]-L.gx[rk]/2+L.gy[rk]/2:base;
-  const fhD=fk>=0?vh[fk]-L.gx[fk]/2-L.gy[fk]/2:base, fhC=fk>=0?vh[fk]+L.gx[fk]/2-L.gy[fk]/2:base;
+  const gx=cut?0:L.gx[k], gy=cut?0:L.gy[k], sl=gx!==0||gy!==0, hB=h+gx/2-gy/2, hC=h+gx/2+gy/2, hD=h-gx/2+gy/2, hA=h-gx/2-gy/2;
+  const rg=rk>=0?fl(rk):0, fg=fk>=0?fl(fk):0;
+  const rhB=rk>=0?vh[rk]-rg*L.gx[rk]/2-rg*L.gy[rk]/2:base, rhC=rk>=0?vh[rk]-rg*L.gx[rk]/2+rg*L.gy[rk]/2:base;
+  const fhD=fk>=0?vh[fk]-fg*L.gx[fk]/2-fg*L.gy[fk]/2:base, fhC=fk>=0?vh[fk]+fg*L.gx[fk]/2-fg*L.gy[fk]/2:base;
   const A=proj(i,j,hA),B=proj(i+1,j,hB),C=proj(i+1,j+1,hC),D=proj(i,j+1,hD);
   // sivut: tumma runko ja ohut valojuova
   const sideR=hB>rhB+1e-3||hC>rhC+1e-3, sideF=hD>fhD+1e-3||hC>fhC+1e-3;
@@ -905,6 +904,8 @@ function drawTile(i,j){
   if(sideF){ quad(D,C,proj(i+1,j+1,Math.min(fhC,hC)),proj(i,j+1,Math.min(fhD,hD)),rgb(col,0.38));
     if(raised&&!sl&&h-0.3>fhD) line(proj(i,j+1,h-0.3),proj(i+1,j+1,h-0.3),edgeCol(k,0.22),1); }
   if(raised&&sideR&&sideF) line(C,proj(i+1,j+1,Math.min(hC,Math.max(rhC,fhC))),edgeCol(k,0.45),1.2);
+  if(cut){   // leikkauspinta: tumma pohjapiirros katkoviivalla – tässä kohdassa on palikka, jonka läpi katsotaan
+    quad(A,B,C,D,rgb(col,0.3)); ctx.strokeStyle=edgeCol(k,0.5); ctx.lineWidth=1; ctx.setLineDash([3,4]); path4(A,B,C,D); ctx.stroke(); ctx.setLineDash([]); return; }
   // kansi: viisto pinta on vaaleampi katsojaan päin ja tummempi poispäin
   if(ty===2){ quad(A,B,C,D,'rgba(70,150,220,0.75)'); line(proj(i+0.15,j+0.85,h),proj(i+0.85,j+0.15,h),'rgba(255,255,255,0.35)',1.2); }
   else quad(A,B,C,D,rgb(col,sl?Math.max(0.5,1.25-1.1*(gx+gy)):1));
@@ -922,7 +923,6 @@ function drawTile(i,j){
   if(PZ.tp[k]>=0) padDeco(i,j,h,PZ.tpi[k]);
   // reunavalo: vain näkyvät reunat korostetaan
   ctx.strokeStyle=edgeCol(k, raised||ty===1||ty===3?0.95:0.6); ctx.lineWidth= raised?1.5:1; path4(A,B,C,D); ctx.stroke();
-  ctx.globalAlpha=1;
   if(fieldTop&&fieldTop[k]>h+0.01){ const ft=fieldTop[k], ec=PZ.gate[k]>=0?GCOL[PZ.gate[k]]:TH.wall, gt=PZ.gate[k]>=0?2:1;
     const rf=rk>=0?(fieldTop[rk]||vh[rk]):0, ff=fk>=0?(fieldTop[fk]||vh[fk]):0;
     const A2=proj(i,j,ft),B2=proj(i+1,j,ft),C2=proj(i+1,j+1,ft),D2=proj(i,j+1,ft);
@@ -955,6 +955,44 @@ function drawPortal(){
   ctx.strokeStyle=ca(TH.portal,pulse); ctx.lineWidth=2.5; ctx.beginPath(); ctx.ellipse(m[0],m[1],rw*0.6,rw*0.3,0,0,Math.PI*2); ctx.stroke();
   ctx.restore();
 }
+// ---------- Kurkistusaukko ----------
+// Kun pallo jää korkeamman palikan taakse, pallon ympärille avautuu pyöreä aukko. Aukon sisällä pallon edessä olevat
+// korkeat palikat piirretään leikattuina pallon alustan tasolle, joten pallo ja sen alusta näkyvät. Palikat aukon
+// ulkopuolella pysyvät aina umpinaisina, jotta korkeudet näkyvät oikein.
+const RAYZ=(1/2)/0.6;      // katselusäde kohti kameraa: (+1,+1) ruutua kohden nousu = (TW/2)/(0.6·TW)
+let cutPass=false, cutM=null, vhC=null, peekR=0, peekZ=0.5, peekT=0;
+function rayHidden(x,y,z){   // peittääkö jokin palikka pisteen kameralta?
+  const bi=Math.floor(x), bj=Math.floor(y);
+  for(let t=0.05;t<12;t+=0.1){ const i=Math.floor(x+t), j=Math.floor(y+t); if(i>=L.W||j>=L.H) break; if(i<0||j<0||(i===bi&&j===bj)) continue;
+    if(vh[j*L.W+i]>z+RAYZ*t) return true; }
+  return false; }
+// onko pallo pompun alimmassa kohdassa kokonaan jonkin palikan takana?
+function ballHidden(){ const z0=baseZ+2*R; for(const o of [0,-0.2,0.2]) if(rayHidden(ball.px+o,ball.py-o,z0)) return true; return false; }
+function drawPeek(bd){
+  const now=performance.now();
+  if(running&&!won&&ballHidden()) peekT=now;
+  const open=now-peekT<350;   // pieni viive sulkeutumiseen, ettei aukko räpsy reunoilla
+  peekR+=((open?1:0)-peekR)*0.22; if(!open&&peekR<0.03){ peekR=0; peekZ=baseZ; return; }
+  peekZ+=(baseZ-peekZ)*0.25;
+  const c=proj(ball.px,ball.py,peekZ+0.9), r=peekR*TW*1.35, N=L.h.length;
+  if(!vhC||vhC.length!==N){ vhC=new Float32Array(N); cutM=new Uint8Array(N); }
+  for(let j=0;j<L.H;j++) for(let i=0;i<L.W;i++){ const k=j*L.W+i, ct=i+j>bd&&vh[k]>baseZ+0.3; cutM[k]=ct?1:0; vhC[k]=ct?baseZ:vh[k]; }
+  ctx.save(); ctx.beginPath(); ctx.arc(c[0],c[1],r,0,Math.PI*2); ctx.clip();
+  drawSpace(); ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(c[0]-r,c[1]-r,2*r,2*r);
+  const vh0=vh, fd0=flagDrawn; vh=vhC; cutPass=true; flagDrawn=false; let ballDrawn=false;
+  for(let s=0;s<=L.W+L.H-2;s++){
+    if(!ballDrawn&&s>bd){ drawBall(false); ballDrawn=true; }
+    for(let i=0;i<=s;i++){ const j=s-i; if(i>=L.W||j>=L.H) continue; const k=j*L.W+i, h=vhC[k];
+      const tx=(i-j)*TW/2-camX+W/2, ty=(i+j+1)*TW/4-h*HZ()-camY+H*0.55;
+      if(Math.abs(tx-c[0])>r+TW/2||ty-TW/4>c[1]+r||ty+(h+0.6)*HZ()+TW/4<c[1]-r) continue;
+      drawTile(i,j); }
+    for(const q of PZ.cr) if(!q.got&&Math.floor(q.x)+Math.floor(q.y)===s&&!cutM[Math.floor(q.y)*L.W+Math.floor(q.x)]) drawCrystal(q);
+  }
+  if(!ballDrawn) drawBall(false);
+  vh=vh0; cutPass=false; flagDrawn=fd0; ctx.restore();
+  ctx.strokeStyle=`rgba(140,245,255,${0.55*peekR})`; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(c[0],c[1],r,0,Math.PI*2); ctx.stroke();
+  ctx.strokeStyle=`rgba(0,229,255,${0.18*peekR})`; ctx.lineWidth=5; ctx.stroke();
+}
 const VIEW=(()=>{ const v=[1,1,1.3], l=Math.hypot(...v); return v.map(x=>x/l); })();
 function drawBall(ghost){
   const c=proj(ball.px,ball.py,ball.pz), rp=R*TW*0.62;
@@ -984,14 +1022,18 @@ function draw(u){
     for(let k=1;k<=420&&nb<2;k++){ s.hit=-1; stepS(s,u[0],u[1],L);
       if(s.hit>=0){ nb++; if(land<0){ land=s.hit; landP=[s.px,s.py]; } }
       if(k%8===0) dots.push([s.px,s.py,s.pz,nb]); } }
-  flagDrawn=false;
-  const bsum=ball.px+ball.py; let ballDrawn=false;
+  // pallo piirretään oman ruutunsa lävistäjän jälkeen: oma ruutu ei peitä sitä, edessä olevat peittävät
+  const bd=Math.floor(ball.px)+Math.floor(ball.py);
+  flagDrawn=false; let ballDrawn=false;
   for(let s=0;s<=L.W+L.H-2;s++){
-    if(!ballDrawn&&s+1>bsum){ drawBall(false); ballDrawn=true; }
+    if(!ballDrawn&&s>bd){ drawBall(false); ballDrawn=true; }
     for(let i=0;i<=s;i++){ const j=s-i; if(i<L.W&&j<L.H) drawTile(i,j); }
     for(const c of PZ.cr) if(!c.got&&Math.floor(c.x)+Math.floor(c.y)===s) drawCrystal(c);
   }
   if(!ballDrawn) drawBall(false);
+  // palikan taakse jäävä kide kuultaa läpi, jotta sen löytää
+  for(const c of PZ.cr) if(!c.got&&rayHidden(c.x,c.y,c.z)){ ctx.globalAlpha=0.42; drawCrystal(c); ctx.globalAlpha=1; }
+  drawPeek(bd);
   drawBall(true);
   drawParts();
   for(const d of dots){ const c=proj(d[0],d[1],d[2]); ctx.fillStyle=d[3]?'rgba(0,229,255,0.28)':'rgba(140,245,255,0.85)'; ctx.beginPath(); ctx.arc(c[0],c[1],2.2,0,Math.PI*2); ctx.fill(); }
@@ -1054,7 +1096,7 @@ function loop(now){
         if(PZ.sw[hk]>=0 && (PZ.prev<0||PZ.sw[PZ.prev]!==PZ.sw[hk])) toggleGates(PZ.sw[hk],hk);
         const wasPrev=PZ.prev; PZ.prev=hk;
         if(PZ.tp[hk]>=0){ if(PZ.armed) teleport(hk); } else PZ.armed=true;
-        if(ty===3&&PZ.got<PZ.cr.length){ SND.bounce(hh,0); if(wasPrev<0||L.t[wasPrev]!==3){ SND.locked(); HAP.side(3); flash(T('locked',PZ.got,PZ.cr.length),3); } }
+        if(ty===3&&PZ.got<PZ.cr.length){ SND.bounce(hh,0); if(wasPrev<0||L.t[wasPrev]!==3){ SND.locked(); HAP.side(3); } flash(T('locked',PZ.got,PZ.cr.length),3); }
         else if(ty===3) winLevel(); else { SND.bounce(hh,ty); HAP.bounce(ty); if(ty===12||ty===13||(ty>=8&&ty<=11)) puff(ball.px,ball.py,hh,ty>=8&&ty<=11?8:ty); } }
       stepPuzzle(DT); if(AP.on) apAfter(); }
     if(!fallSnd && ball.pz-R<lastLand-0.9 && ball.vz<0){ fallSnd=true; SND.fall(); HAP.fall(); }
@@ -1068,7 +1110,7 @@ function loop(now){
   draw(u); requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-window.__game={ball,keys,P,LEVELS,startLevel,startDemo,get AP(){return AP;},fastForward(sec){ const n=Math.round(sec/DT); for(let k=0;k<n&&running;k++){ ball.hit=-1; const uu=AP.on?apInput():[0,0]; stepS(ball,uu[0],uu[1],L); if(ball.hit>=0){ const hk=ball.hit, hh=L.h[hk], ty=L.t[hk]; if(hh<lastLand-0.75) falls++; bounces++; lastLand=hh; baseZ=hh; if(PZ.sw[hk]>=0&&(PZ.prev<0||PZ.sw[PZ.prev]!==PZ.sw[hk])) toggleGates(PZ.sw[hk],hk); PZ.prev=hk; if(PZ.tp[hk]>=0){ if(PZ.armed) teleport(hk); } else PZ.armed=true; if(ty===3&&PZ.got>=PZ.cr.length) winLevel(); } stepPuzzle(DT); if(AP.on) apAfter(); } },get PZ(){return PZ;},get L(){return L;},get won(){return won;},get falls(){return falls;}};
+window.__game={ball,keys,P,LEVELS,startLevel,startDemo,get AP(){return AP;},fastForward(sec,fn){ const n=Math.round(sec/DT); for(let k=0;k<n&&running;k++){ ball.hit=-1; const uu=AP.on?apInput():(fn?fn():[0,0]); stepS(ball,uu[0],uu[1],L); if(ball.hit>=0){ const hk=ball.hit, hh=L.h[hk], ty=L.t[hk]; if(hh<lastLand-0.75) falls++; bounces++; lastLand=hh; baseZ=hh; if(PZ.sw[hk]>=0&&(PZ.prev<0||PZ.sw[PZ.prev]!==PZ.sw[hk])) toggleGates(PZ.sw[hk],hk); PZ.prev=hk; if(PZ.tp[hk]>=0){ if(PZ.armed) teleport(hk); } else PZ.armed=true; if(ty===3&&PZ.got>=PZ.cr.length) winLevel(); } stepPuzzle(DT); if(AP.on) apAfter(); } },get PZ(){return PZ;},get L(){return L;},get won(){return won;},get falls(){return falls;},get bounces(){return bounces;},get baseZ(){return baseZ;},set baseZ(v){baseZ=v;},get peek(){return peekR;}};
 applyLang();
 showMenu();
 })();
